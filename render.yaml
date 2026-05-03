@@ -1,0 +1,22 @@
+databases:
+    - name: synapse-db
+      databaseName: synapse
+      user: synapse
+      plan: free
+
+  services:
+    - type: web
+      name: synapse-recipe
+      runtime: node
+      plan: starter
+      buildCommand: NODE_OPTIONS=--max-old-space-size=2048 npm install --include=dev && npm run build
+      startCommand: npm start
+      healthCheckPath: /
+      envVars:
+        - key: NODE_ENV
+          value: production
+        - key: DATABASE_URL
+          fromDatabase:
+            name: synapse-db
+            property: connectionString
+  
